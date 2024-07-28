@@ -1,0 +1,39 @@
+when:
+  - event: cron
+    cron: "0 5 * * *"
+  - event: push
+    branch:
+      - main
+
+variables:
+  - &build_plugin "woodpeckerci/plugin-docker-buildx:latest"
+  - docker_logins: &docker_logins
+      - registry: https://docker.gosh.sh
+        username: woodpecker
+        password:
+          from_secret: DOCKER_GOSH_SH_PASSWORD
+
+steps:
+  rust:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      repo: docker.gosh.sh/rust
+      dockerfile: docker/rust.dockerfile
+
+  debian:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      repo: docker.gosh.sh/debian
+      dockerfile: docker/debian.dockerfile
+
+  bun:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      repo: docker.gosh.sh/bun
+      dockerfile: docker/bun.dockerfile
