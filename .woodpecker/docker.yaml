@@ -20,6 +20,7 @@ steps:
     image: *build_plugin
     settings:
       logins: *docker_logins
+      platforms: linux/amd64,linux/arm64/v8
       repo: docker.gosh.sh/rust
       dockerfile: docker/rust.dockerfile
 
@@ -28,6 +29,7 @@ steps:
     image: *build_plugin
     settings:
       logins: *docker_logins
+      platforms: linux/amd64,linux/arm64/v8
       repo: docker.gosh.sh/debian
       dockerfile: docker/debian.dockerfile
 
@@ -36,5 +38,6 @@ steps:
     image: *build_plugin
     settings:
       logins: *docker_logins
+      platforms: linux/amd64,linux/arm64/v8
       repo: docker.gosh.sh/bun
       dockerfile: docker/bun.dockerfile
