@@ -10,3 +10,9 @@ RUN \
     cmake
 
 RUN cargo install cargo-chef --version ^0.1
+
+RUN rustup component add clippy
+
+# support for `cargo +nightly fmt`
+RUN rustup toolchain add nightly
+RUN rustup component add --toolchain nightly rustfmt
