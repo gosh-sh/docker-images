@@ -23,6 +23,8 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/rust
       dockerfile: docker/rust.dockerfile
+      cache_from:
+        - docker.gosh.sh/rust
 
   debian:
     depends_on: []
@@ -41,3 +43,12 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/bun
       dockerfile: docker/bun.dockerfile
+
+  ansible:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/ansible
+      dockerfile: docker/ansible.dockerfile
