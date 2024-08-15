@@ -4,17 +4,20 @@
 FROM rust:latest AS rust-builder
 
 
+ARG BUILDPLATFORM
 FROM --platform=$BUILDPLATFORM rust-builder AS chef-amd64
 RUN rustup target add x86_64-unknown-linux-gnu
 RUN cargo install cargo-chef --version ^0.1 --target x86_64-unknown-linux-gnu
 
 
+ARG BUILDPLATFORM
 FROM --platform=$BUILDPLATFORM rust-builder AS chef-arm64
 RUN rustup target add aarch64-unknown-linux-gnu
 RUN cargo install cargo-chef --version ^0.1 --target aarch64-unknown-linux-gnu
 
 # TODO: add more platforms if needed
 
+ARG TARGETARCH
 FROM chef-${TARGETARCH} AS chef
 
 
