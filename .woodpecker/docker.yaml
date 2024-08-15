@@ -41,7 +41,8 @@ steps:
     settings:
       logins: *docker_logins
       platforms: linux/amd64,linux/arm64
-      repo: docker.gosh.sh/debian:slim
+      repo: docker.gosh.sh/debian
+      tag: slim
       dockerfile: docker/debian-slim.dockerfile
 
   debian:
