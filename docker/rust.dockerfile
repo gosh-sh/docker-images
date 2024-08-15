@@ -13,7 +13,7 @@ ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-linux-gnu-gcc \
 RUN <<EOF
     set -ex
     apt-get update
-    apt-get install -y llvm-dev \
+    apt-get install -y \
         g++-x86-64-linux-gnu \
         libc6-dev-amd64-cross \
         g++-aarch64-linux-gnu \

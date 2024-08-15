@@ -2,7 +2,12 @@
 
 FROM python:3.12.0-bookworm AS base
 
-RUN pip install ansible==10.2.0
+ENV PIP_ROOT_USER_ACTION=ignore
+RUN <<EOF
+    pip install --upgrade pip
+    pip install ansible==10.3.0
+    ansible --version
+EOF
 
 WORKDIR /ansible
 
