@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.9
 
-FROM python:3.12.0-bookworm AS base
+FROM python:3.12.5-bookworm AS base
 
 ENV PIP_ROOT_USER_ACTION=ignore
 RUN <<EOF
