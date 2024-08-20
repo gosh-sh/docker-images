@@ -45,7 +45,9 @@ WORKDIR /app
 RUN \
     apt-get update && apt-get install -yq \
     build-essential \
-    cmake
+    cmake \
+    jq \
+    just
 
 COPY --link --from=chef /usr/local/cargo/bin/cargo-chef /usr/local/cargo/bin/cargo-chef
 
