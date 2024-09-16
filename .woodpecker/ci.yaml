@@ -1,0 +1,14 @@
+---
+when:
+  - event: push
+    branch:
+      - ci/test
+
+steps:
+  - name: test
+    image: docker.gosh.sh/debian
+    commands:
+      - apt-get update
+      - apt-get install -y git
+      - git status
+      - git branch
