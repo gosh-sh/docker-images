@@ -6,9 +6,7 @@ when:
 
 steps:
   - name: test
-    image: docker.gosh.sh/debian
+    image: docker.gosh.sh/rust
     commands:
-      - apt-get update
-      - apt-get install -y git
       - git status
       - git branch
