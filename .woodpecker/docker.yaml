@@ -63,6 +63,15 @@ steps:
       repo: docker.gosh.sh/dragonfly
       dockerfile: docker/dragonfly.dockerfile
 
+  nginx:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/nginx
+      dockerfile: docker/nginx.dockerfile
+
   bun:
     depends_on: []
     image: *build_plugin
