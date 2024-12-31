@@ -23,8 +23,6 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/rust
       dockerfile: docker/rust.dockerfile
-      cache_from:
-        - docker.gosh.sh/rust
 
   taplo:
     depends_on: []
