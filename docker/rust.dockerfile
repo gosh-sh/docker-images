@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.12.1
 
 ARG MOLD_VERSION=2.33.0
 
@@ -29,12 +29,12 @@ EOF
 
 
 FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-amd64
-RUN cargo install cargo-chef --version ^0.1 --target x86_64-unknown-linux-gnu
+RUN cargo install cargo-chef --version 0.1.68 --target x86_64-unknown-linux-gnu
 RUN cargo install just --version ^1 --target x86_64-unknown-linux-gnu
 
 
 FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-arm64
-RUN cargo install cargo-chef --version ^0.1 --target aarch64-unknown-linux-gnu
+RUN cargo install cargo-chef --version 0.1.68 --target aarch64-unknown-linux-gnu
 RUN cargo install just --version ^1 --target aarch64-unknown-linux-gnu
 
 # TODO: add more platforms if needed
