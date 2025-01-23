@@ -25,7 +25,7 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/rust
       tag: stable
-      dockerfile: docker/rust.dockerfile
+      dockerfile: docker/rust-stable.dockerfile
 
   debian-stable-slim:
     depends_on: []
@@ -35,7 +35,7 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/debian
       tag: stable-slim
-      dockerfile: docker/debian-slim.dockerfile
+      dockerfile: docker/debian-stable-slim.dockerfile
 
   debian-stable:
     depends_on: []
@@ -45,4 +45,4 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/debian
       tag: stable
-      dockerfile: docker/debian.dockerfile
+      dockerfile: docker/debian-stable.dockerfile
