@@ -1,0 +1,48 @@
+---
+when:
+  - event: push
+    branch: main
+    path:
+      - .woodpecker/docker-stable.yaml
+      - docker/debian-stable-slim.dockerfile
+      - docker/debian-stable.dockerfile
+      - docker/rust-stable.dockerfile
+
+variables:
+  - &build_plugin "woodpeckerci/plugin-docker-buildx:latest"
+  - docker_logins: &docker_logins
+      - registry: https://docker.gosh.sh
+        username: woodpecker
+        password:
+          from_secret: DOCKER_GOSH_SH_PASSWORD
+
+steps:
+  rust-stable:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/rust
+      tag: stable
+      dockerfile: docker/rust.dockerfile
+
+  debian-stable-slim:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/debian
+      tag: stable-slim
+      dockerfile: docker/debian-slim.dockerfile
+
+  debian-stable:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/debian
+      tag: stable
+      dockerfile: docker/debian.dockerfile
