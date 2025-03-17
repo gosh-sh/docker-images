@@ -2,6 +2,7 @@
 
 # see https://github.com/rui314/mold/releases
 ARG MOLD_VERSION=2.37.1
+ARG SCCACHE_VERSION=0.10.0
 
 FROM rust:latest AS rust-builder
 
@@ -30,12 +31,10 @@ EOF
 
 
 FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-amd64
-RUN cargo install sccache --version 0.10.0 --target x86_64-unknown-linux-gnu
 RUN cargo install just --version ^1 --target x86_64-unknown-linux-gnu
 
 
 FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-arm64
-RUN cargo install sccache --version 0.10.0 --target aarch64-unknown-linux-gnu
 RUN cargo install just --version ^1 --target aarch64-unknown-linux-gnu
 
 # TODO: add more platforms if needed
@@ -70,8 +69,16 @@ RUN <<EOF
     # ln -sf /usr/local/bin/mold "$(realpath /usr/bin/ld)"
 EOF
 
+RUN <<EOF
+    echo "sccache ${SCCACHE_VERSION}"
 
-COPY --link --from=tools /usr/local/cargo/bin/sccache /usr/local/cargo/bin/sccache
+    wget -O- --timeout=10 --waitretry=3 \
+        --retry-connrefused \
+        --progress=dot:mega \
+        https://github.com/mozilla/sccache/releases/download/v${SCCACHE_VERSION}/sccache-v${SCCACHE_VERSION}-$(uname -m)-unknown-linux-musl.tar.gz \
+    | tar -C /usr/local/bin/ --strip-components=1 --no-overwrite-dir -xzf -
+EOF
+
 COPY --link --from=tools /usr/local/cargo/bin/just /usr/local/cargo/bin/just
 
 RUN rustup component add clippy
