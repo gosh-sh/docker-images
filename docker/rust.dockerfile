@@ -1,6 +1,7 @@
-# syntax=docker/dockerfile:1.12.1
+# syntax=docker/dockerfile:1.14
 
-ARG MOLD_VERSION=2.33.0
+# see https://github.com/rui314/mold/releases
+ARG MOLD_VERSION=2.37.1
 
 FROM rust:latest AS rust-builder
 
@@ -29,12 +30,12 @@ EOF
 
 
 FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-amd64
-RUN cargo install cargo-chef --version 0.1.68 --target x86_64-unknown-linux-gnu
+RUN cargo install sccache --version 0.10.0 --target x86_64-unknown-linux-gnu
 RUN cargo install just --version ^1 --target x86_64-unknown-linux-gnu
 
 
 FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-arm64
-RUN cargo install cargo-chef --version 0.1.68 --target aarch64-unknown-linux-gnu
+RUN cargo install sccache --version 0.10.0 --target aarch64-unknown-linux-gnu
 RUN cargo install just --version ^1 --target aarch64-unknown-linux-gnu
 
 # TODO: add more platforms if needed
@@ -70,7 +71,7 @@ RUN <<EOF
 EOF
 
 
-COPY --link --from=tools /usr/local/cargo/bin/cargo-chef /usr/local/cargo/bin/cargo-chef
+COPY --link --from=tools /usr/local/cargo/bin/sccache /usr/local/cargo/bin/sccache
 COPY --link --from=tools /usr/local/cargo/bin/just /usr/local/cargo/bin/just
 
 RUN rustup component add clippy
