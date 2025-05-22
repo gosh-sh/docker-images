@@ -56,7 +56,8 @@ RUN \
     cmake \
     wget \
     curl \
-    jq
+    jq \
+    numa-dev
 
 RUN <<EOF
     echo "mold ${MOLD_VERSION}"
