@@ -57,7 +57,7 @@ RUN \
     wget \
     curl \
     jq \
-    numa-dev
+    libnuma-dev
 
 RUN <<EOF
     echo "mold ${MOLD_VERSION}"
