@@ -4,7 +4,7 @@
 ARG MOLD_VERSION=2.37.1
 ARG SCCACHE_VERSION=0.10.0
 
-FROM rust:latest AS rust-builder
+FROM rust:bookworm AS rust-builder
 
 # build cargo chef faster via multiarch build
 FROM --platform=${BUILDPLATFORM} rust:latest AS rust-platform-builder
