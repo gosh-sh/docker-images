@@ -1,7 +1,7 @@
-# syntax=docker/dockerfile:1.14
+# syntax=docker/dockerfile:1.17
 
 # see https://github.com/rui314/mold/releases
-ARG MOLD_VERSION=2.37.1
+ARG MOLD_VERSION=2.40.4
 ARG SCCACHE_VERSION=0.10.0
 
 FROM rust:bookworm AS rust-builder
@@ -57,7 +57,9 @@ RUN \
     wget \
     curl \
     jq \
-    libnuma-dev
+    libnuma-dev \
+    tcl-dev \
+    tk-dev
 
 RUN <<EOF
     echo "mold ${MOLD_VERSION}"
