@@ -61,6 +61,15 @@ steps:
       repo: docker.gosh.sh/dragonfly
       dockerfile: docker/dragonfly.dockerfile
 
+  gitleaks:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/gitleaks
+      dockerfile: docker/gitleaks.dockerfile
+
   nginx:
     depends_on: []
     image: *build_plugin
