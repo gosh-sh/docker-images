@@ -6,6 +6,7 @@ when:
       - .woodpecker/docker-stable.yaml
       - docker/debian-stable-slim.dockerfile
       - docker/debian-stable.dockerfile
+      - docker/plugin-docker-buildx-cond-stable.dockerfile
       - docker/rust-stable.dockerfile
 
 variables:
@@ -17,6 +18,16 @@ variables:
           from_secret: DOCKER_GOSH_SH_PASSWORD
 
 steps:
+  plugin-docker-buildx-cond:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/plugin-docker-buildx-cond
+      tag: stable
+      dockerfile: docker/plugin-docker-buildx-cond-stable.Dockerfile
+
   rust-stable:
     depends_on: []
     image: *build_plugin

@@ -13,6 +13,7 @@ DOCKER_FILES_TO_IMAGES: list[tuple[str, str]] = [
     ("docker/rust-stable.dockerfile", "docker.gosh.sh/rust"),
     ("docker/debian-stable.dockerfile", "docker.gosh.sh/debian"),
     ("docker/debian-stable-slim.dockerfile", "docker.gosh.sh/debian:slim"),
+    ("docker/plugin-docker-buildx-cond-stable.dockerfile", "docker.gosh.sh/plugin-docker-buildx-cond"),
 ]
 
 
