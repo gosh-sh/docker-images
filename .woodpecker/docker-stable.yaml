@@ -26,7 +26,7 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/plugin-docker-buildx-cond
       tag: stable
-      dockerfile: docker/plugin-docker-buildx-cond-stable.Dockerfile
+      dockerfile: docker/plugin-docker-buildx-cond-stable.dockerfile
 
   rust-stable:
     depends_on: []
