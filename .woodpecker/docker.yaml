@@ -15,6 +15,15 @@ variables:
           from_secret: DOCKER_GOSH_SH_PASSWORD
 
 steps:
+  plugin_docker_buildx_cond:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      platforms: linux/amd64,linux/arm64
+      repo: docker.gosh.sh/plugin-docker-buildx-cond
+      dockerfile: docker/plugin-docker-buildx-cond/Dockerfile
+
   rust:
     depends_on: []
     image: *build_plugin
