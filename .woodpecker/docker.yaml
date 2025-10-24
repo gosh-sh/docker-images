@@ -23,6 +23,7 @@ steps:
       platforms: linux/amd64,linux/arm64
       repo: docker.gosh.sh/plugin-docker-buildx-cond
       context: docker/plugin-docker-buildx-cond
+      dockerfile: docker/plugin-docker-buildx-cond/Dockerfile
 
   rust:
     depends_on: []
