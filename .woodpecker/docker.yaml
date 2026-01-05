@@ -5,7 +5,6 @@ when:
   - event: push
     branch:
       - main
-      - ci/*
 
 variables:
   - &build_plugin "woodpeckerci/plugin-docker-buildx:latest"
