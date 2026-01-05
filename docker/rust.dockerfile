@@ -9,9 +9,11 @@ ARG CARGO_DENY_VERSION=0.18.9
 # see https://github.com/casey/just/releases
 ARG JUST_VERSION=1.46.0
 
+
 FROM rust:trixie AS rust-base
 
-FROM rust-base
+
+FROM rust-base AS download-tools
 ARG MOLD_VERSION
 ENV MOLD_VERSION=${MOLD_VERSION}
 ARG SCCACHE_VERSION
@@ -20,19 +22,6 @@ ARG CARGO_DENY_VERSION
 ENV CARGO_DENY_VERSION=${CARGO_DENY_VERSION}
 ARG JUST_VERSION
 ENV JUST_VERSION=${JUST_VERSION}
-
-WORKDIR /app
-
-RUN \
-    apt-get update && apt-get install -yq \
-    build-essential \
-    cmake \
-    wget \
-    curl \
-    jq \
-    libnuma-dev \
-    tcl-dev \
-    tk-dev
 
 RUN <<EOF
     echo "mold ${MOLD_VERSION}"
@@ -74,11 +63,42 @@ RUN <<EOF
         --retry-connrefused \
         --progress=dot:mega \
         https://github.com/casey/just/releases/download/${JUST_VERSION}/just-${JUST_VERSION}-$(uname -m)-unknown-linux-musl.tar.gz \
-    | tar -C /usr/local/bin/ --strip-components=1 --no-overwrite-dir -xzf -
+    | tar -xzOf - just > /usr/local/bin/just && chmod +x /usr/local/bin/just
 EOF
+
+
+FROM rust-base AS final
+
+WORKDIR /app
+
+RUN \
+    apt-get update && apt-get install -yq \
+    build-essential \
+    cmake \
+    wget \
+    curl \
+    jq \
+    libnuma-dev \
+    tcl-dev \
+    tk-dev
+
+COPY --from=download-tools /usr/local/bin/mold /usr/local/bin/mold
+COPY --from=download-tools /usr/local/bin/sccache /usr/local/bin/sccache
+COPY --from=download-tools /usr/local/bin/cargo-deny /usr/local/bin/cargo-deny
+COPY --from=download-tools /usr/local/bin/just /usr/local/bin/just
 
 RUN rustup component add clippy
 
 # support for `cargo +nightly fmt`
 RUN rustup toolchain add nightly
 RUN rustup component add --toolchain nightly rustfmt
+
+# Test all installed binaries
+RUN <<EOF
+    mold --version
+    sccache --version
+    cargo-deny --version
+    just --version
+    rustup --version
+    cargo --version
+EOF
