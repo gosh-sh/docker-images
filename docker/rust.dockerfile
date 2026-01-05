@@ -1,13 +1,14 @@
-# syntax=docker/dockerfile:1.17
+# syntax=docker/dockerfile:1.20
 
 # see https://github.com/rui314/mold/releases
 ARG MOLD_VERSION=2.40.4
-ARG SCCACHE_VERSION=0.10.0
+ARG SCCACHE_VERSION=0.12.0
 
-FROM rust:bookworm AS rust-builder
+FROM rust:trixie AS rust-base
 
-# build cargo chef faster via multiarch build
-FROM --platform=${BUILDPLATFORM} rust:latest AS rust-platform-builder
+FROM rust:trixie AS rust-builder
+
+FROM --platform=${BUILDPLATFORM} rust-base AS rust-platform-builder
 ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-linux-gnu-gcc \
     CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc \
     CXX_x86_64_unknown_linux_gnu=x86_64-linux-gnu-g++ \
@@ -91,3 +92,4 @@ RUN rustup component add clippy
 # support for `cargo +nightly fmt`
 RUN rustup toolchain add nightly
 RUN rustup component add --toolchain nightly rustfmt
+RUN cargo install cargo-deny
