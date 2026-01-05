@@ -2,52 +2,24 @@
 
 # see https://github.com/rui314/mold/releases
 ARG MOLD_VERSION=2.40.4
+# see https://github.com/mozilla/sccache/releases
 ARG SCCACHE_VERSION=0.12.0
+# see https://github.com/EmbarkStudios/cargo-deny/releases
+ARG CARGO_DENY_VERSION=0.18.9
+# see https://github.com/casey/just/releases
+ARG JUST_VERSION=1.46.0
 
 FROM rust:trixie AS rust-base
 
-FROM rust:trixie AS rust-builder
-
-FROM --platform=${BUILDPLATFORM} rust-base AS rust-platform-builder
-ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-linux-gnu-gcc \
-    CC_x86_64_unknown_linux_gnu=x86_64-linux-gnu-gcc \
-    CXX_x86_64_unknown_linux_gnu=x86_64-linux-gnu-g++ \
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
-    CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc \
-    CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
-RUN <<EOF
-    set -ex
-    apt-get update
-    apt-get install -y \
-        g++-x86-64-linux-gnu \
-        libc6-dev-amd64-cross \
-        g++-aarch64-linux-gnu \
-        libc6-dev-arm64-cross
-    file $(which rustup)  # for debug
-    rustup target add x86_64-unknown-linux-gnu
-    rustup toolchain install --force-non-host stable-x86_64-unknown-linux-gnu
-    rustup target add aarch64-unknown-linux-gnu
-    rustup toolchain install --force-non-host stable-aarch64-unknown-linux-gnu
-EOF
-
-
-FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-amd64
-RUN cargo install just --version ^1 --target x86_64-unknown-linux-gnu
-
-
-FROM --platform=${BUILDPLATFORM} rust-platform-builder AS tools-arm64
-RUN cargo install just --version ^1 --target aarch64-unknown-linux-gnu
-
-# TODO: add more platforms if needed
-
-FROM tools-${TARGETARCH} AS tools
-
-
-FROM rust-builder
+FROM rust-base
 ARG MOLD_VERSION
 ENV MOLD_VERSION=${MOLD_VERSION}
 ARG SCCACHE_VERSION
 ENV SCCACHE_VERSION=${SCCACHE_VERSION}
+ARG CARGO_DENY_VERSION
+ENV CARGO_DENY_VERSION=${CARGO_DENY_VERSION}
+ARG JUST_VERSION
+ENV JUST_VERSION=${JUST_VERSION}
 
 WORKDIR /app
 
@@ -85,11 +57,28 @@ RUN <<EOF
     | tar -C /usr/local/bin/ --strip-components=1 --no-overwrite-dir -xzf -
 EOF
 
-COPY --link --from=tools /usr/local/cargo/bin/just /usr/local/cargo/bin/just
+RUN <<EOF
+    echo "cargo-deny ${CARGO_DENY_VERSION}"
+
+    wget -O- --timeout=10 --waitretry=3 \
+        --retry-connrefused \
+        --progress=dot:mega \
+        https://github.com/EmbarkStudios/cargo-deny/releases/download/${CARGO_DENY_VERSION}/cargo-deny-${CARGO_DENY_VERSION}-$(uname -m)-unknown-linux-musl.tar.gz \
+    | tar -C /usr/local/bin/ --strip-components=1 --no-overwrite-dir -xzf -
+EOF
+
+RUN <<EOF
+    echo "just ${JUST_VERSION}"
+
+    wget -O- --timeout=10 --waitretry=3 \
+        --retry-connrefused \
+        --progress=dot:mega \
+        https://github.com/casey/just/releases/download/${JUST_VERSION}/just-${JUST_VERSION}-$(uname -m)-unknown-linux-musl.tar.gz \
+    | tar -C /usr/local/bin/ --strip-components=1 --no-overwrite-dir -xzf -
+EOF
 
 RUN rustup component add clippy
 
 # support for `cargo +nightly fmt`
 RUN rustup toolchain add nightly
 RUN rustup component add --toolchain nightly rustfmt
-RUN cargo install cargo-deny
