@@ -83,6 +83,7 @@ RUN \
     tk-dev
 
 COPY --from=download-tools /usr/local/bin/mold /usr/local/bin/mold
+COPY --from=download-tools /usr/local/lib/mold /usr/local/lib/mold
 COPY --from=download-tools /usr/local/bin/sccache /usr/local/bin/sccache
 COPY --from=download-tools /usr/local/bin/cargo-deny /usr/local/bin/cargo-deny
 COPY --from=download-tools /usr/local/bin/just /usr/local/bin/just
@@ -93,9 +94,14 @@ RUN rustup component add clippy
 RUN rustup toolchain add nightly
 RUN rustup component add --toolchain nightly rustfmt
 
-# Test all installed binaries
 RUN <<EOF
+    echo "DUMMY TESTS TO VERIFY TOOLS ARE INSTALLED CORRECTLY"
+
+    set -e
+
     mold --version
+    test -f /usr/local/lib/mold/mold-wrapper.so || { echo "mold-wrapper.so missing!"; exit 1; }
+    mold --run echo "mold wrapper works"
     sccache --version
     cargo-deny --version
     just --version
