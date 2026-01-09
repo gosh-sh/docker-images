@@ -1,7 +1,9 @@
 ---
 when:
   - event: push
-    branch: main
+    branch:
+      - main
+      - stable
     path:
       - .woodpecker/docker-stable.yaml
       - docker/debian-stable-slim.dockerfile
