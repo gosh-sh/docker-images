@@ -5,6 +5,7 @@ when:
   - event: push
     branch:
       - main
+      - fix-rust-mold-wrapper
 
 variables:
   - &build_plugin "woodpeckerci/plugin-docker-buildx:latest"
