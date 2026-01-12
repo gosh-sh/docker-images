@@ -1,3 +1,3 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.20
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim

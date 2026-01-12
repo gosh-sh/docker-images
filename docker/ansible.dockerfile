@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.20
 
 FROM alpine AS base
 
@@ -23,11 +23,10 @@ RUN apk --update --no-cache add --virtual \
         python3-dev \
   && pip3 install --root-user-action=ignore --break-system-packages --no-cache-dir --upgrade \
         pip \
-  && pip3 install --root-user-action=ignore --break-system-packages --no-cache-dir --upgrade --no-binary \
-        cffi \
+  && pip3 install --root-user-action=ignore --break-system-packages --no-cache-dir --upgrade \
         ansible \
         mitogen \
-  && apk del \
+  && apk --no-cache del \
           .build-deps \
   && rm -rf /var/cache/apk/* \
   && find /usr/lib/ -name '__pycache__' -print0 | xargs -0 -n1 rm -rf \

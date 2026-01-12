@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.20
 
 FROM tamasfe/taplo:0.10.0 AS taplo
 

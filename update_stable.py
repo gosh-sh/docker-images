@@ -7,7 +7,7 @@ from datetime import datetime
 from textwrap import dedent
 from typing import List, Tuple
 
-DOCKER_SYNTAX = "docker/dockerfile:1.14"
+DOCKER_SYNTAX = "docker/dockerfile:1.20"
 
 DOCKER_FILES_TO_IMAGES: list[tuple[str, str]] = [
     ("docker/rust-stable.dockerfile", "docker.gosh.sh/rust"),
@@ -25,6 +25,10 @@ def run_command(cmd: List[str]) -> Tuple[str, str, int]:
 
 def get_digest_for_platform(manifest: str, architecture: str) -> str:
     """Gets the digest for a given platform from a docker manifest."""
+    stdout, stderr, rc = run_command(["docker", "pull", manifest])
+    if rc != 0:
+        raise RuntimeError(f"Failed to pull manifest {manifest}: {stderr}")
+
     stdout, stderr, rc = run_command(["docker", "manifest", "inspect", manifest])
     if rc != 0:
         raise RuntimeError(f"Failed to inspect manifest {manifest}: {stderr}")

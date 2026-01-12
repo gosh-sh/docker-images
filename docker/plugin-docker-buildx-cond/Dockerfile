@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.14
+# syntax=docker/dockerfile:1.20
 
 FROM woodpeckerci/plugin-docker-buildx:latest
 
