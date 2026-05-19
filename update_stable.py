@@ -7,7 +7,7 @@ from datetime import datetime
 from textwrap import dedent
 from typing import List, Tuple
 
-DOCKER_SYNTAX = "docker/dockerfile:1.20"
+DOCKER_SYNTAX = "docker/dockerfile:1.23"
 
 DOCKER_FILES_TO_IMAGES: list[tuple[str, str]] = [
     ("docker/rust-stable.dockerfile", "docker.gosh.sh/rust"),
