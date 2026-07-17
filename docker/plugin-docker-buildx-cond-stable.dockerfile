@@ -9,3 +9,6 @@ FROM --platform=linux/amd64 docker.gosh.sh/plugin-docker-buildx-cond@sha256:5007
 FROM --platform=linux/arm64 docker.gosh.sh/plugin-docker-buildx-cond@sha256:2303e3d37a952e90a7a193a629949e5c106ca9cac48d0d664b7a5411126e323d AS base-arm64
 
 FROM base-${TARGETARCH}
+
+RUN test -e /usr/local/bin/docker-original || mv /usr/local/bin/docker /usr/local/bin/docker-original
+COPY --chmod=755 docker/plugin-docker-buildx-cond/docker-wrapper.sh /usr/local/bin/docker
