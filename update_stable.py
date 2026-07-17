@@ -16,6 +16,13 @@ DOCKER_FILES_TO_IMAGES: list[tuple[str, str]] = [
     ("docker/plugin-docker-buildx-cond-stable.dockerfile", "docker.gosh.sh/plugin-docker-buildx-cond"),
 ]
 
+DOCKERFILE_SUFFIXES: dict[str, str] = {
+    "docker/plugin-docker-buildx-cond-stable.dockerfile": """
+RUN test -e /usr/local/bin/docker-original || mv /usr/local/bin/docker /usr/local/bin/docker-original
+COPY --chmod=755 docker/plugin-docker-buildx-cond/docker-wrapper.sh /usr/local/bin/docker
+""",
+}
+
 
 def run_command(cmd: List[str]) -> Tuple[str, str, int]:
     """Run a command and return stdout, stderr, and return code."""
@@ -67,6 +74,7 @@ FROM --platform=linux/amd64 {manifest_without_tag}@{amd64_digest} AS base-amd64
 FROM --platform=linux/arm64 {manifest_without_tag}@{arm64_digest} AS base-arm64
 
 FROM base-${{TARGETARCH}}
+{DOCKERFILE_SUFFIXES.get(dockerfile_path, "")}
 """
 
     with open(dockerfile_path, "w") as f:
