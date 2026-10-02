@@ -10,6 +10,7 @@ when:
       - docker/debian-stable.dockerfile
       - docker/plugin-docker-buildx-cond-stable.dockerfile
       - docker/rust-stable.dockerfile
+      - docker/caddy-ratelimit.dockerfile
 
 variables:
   - &build_plugin "woodpeckerci/plugin-docker-buildx:latest"
@@ -59,3 +60,15 @@ steps:
       repo: docker.gosh.sh/debian
       tag: stable
       dockerfile: docker/debian-stable.dockerfile
+
+  caddy-ratelimit:
+    depends_on: []
+    image: *build_plugin
+    settings:
+      logins: *docker_logins
+      # xcaddy compiles caddy from source; amd64 only (our hosts), arm64 under
+      # emulation takes far too long.
+      platforms: linux/amd64
+      repo: docker.gosh.sh/caddy-ratelimit
+      tag: 2.8.4
+      dockerfile: docker/caddy-ratelimit.dockerfile
